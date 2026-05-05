@@ -1,0 +1,3093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clarity Law — Queensland Criminal Lawyers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  /* ========== CSS CUSTOM PROPERTIES ========== */
+  :root {
+    --primary:       #0B1F3A;
+    --primary-deep:  #071428;
+    --primary-mid:   #132B5E;
+    --primary-light: #EAF0F9;
+    --gold:          #C9A14A;
+    --gold-deep:     #A8832F;
+    --gold-light:    #F5EDD5;
+    --bg:            #F9F9F9;
+    --bg-warm:       #F4F1EB;
+    --white:         #FFFFFF;
+    --text:          #1A1A1A;
+    --text-soft:     #4A5568;
+    --text-muted:    #718096;
+    --rule:          #E2E8F0;
+    --rule-warm:     #DDD8CE;
+    --radius-sm:     8px;
+    --radius-md:     12px;
+    --radius-lg:     16px;
+    --shadow-sm:     0 2px 8px rgba(11,31,58,.08);
+    --shadow-md:     0 8px 24px rgba(11,31,58,.12);
+    --shadow-lg:     0 20px 48px rgba(11,31,58,.16);
+    --shadow-xl:     0 32px 64px rgba(11,31,58,.2);
+    --transition:    0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ========== LAYOUT ========== */
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ========== TYPOGRAPHY ========== */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  h1, h2, h3 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    color: var(--text);
+  }
+
+  h2.section-title {
+    font-size: clamp(36px, 5vw, 56px);
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+
+  h2.section-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* ========== TOPBAR ========== */
+  .topbar {
+    background: var(--primary-deep);
+    color: #C8D6E8;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .topbar .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    gap: 16px;
+  }
+
+  .topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .topbar .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,161,74,.22);
+    animation: pulse 2.4s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(.75); }
+  }
+
+  .topbar .right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    opacity: .85;
+  }
+
+  .topbar .right a:hover { color: #fff; }
+
+  /* ========== NAVIGATION ========== */
+  nav.primary {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(11,31,58,.04);
+  }
+
+  nav.primary .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    gap: 24px;
+  }
+
+  .logo img {
+    height: 42px;
+    width: auto;
+    display: block;
+  }
+
+  .navlinks {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .navlinks a {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    padding: 6px 0;
+    position: relative;
+    transition: color var(--transition);
+  }
+
+  .navlinks a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform var(--transition);
+    transform-origin: left;
+  }
+
+  .navlinks a:hover { color: var(--primary); }
+  .navlinks a:hover::after { transform: scaleX(1); }
+
+  .navlinks a.first {
+    color: var(--gold-deep);
+    font-weight: 600;
+  }
+
+  .navlinks a.first::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+    vertical-align: middle;
+    animation: pulse 2.2s infinite;
+  }
+
+  .navlinks a.first::after { background: var(--gold-deep); }
+
+  .nav-cta {
+    background: var(--primary);
+    color: #fff !important;
+    padding: 11px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+    white-space: nowrap;
+  }
+
+  .nav-cta:hover {
+    background: var(--primary-mid) !important;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+  }
+
+  .nav-cta::after { display: none !important; }
+
+  /* ========== HERO ========== */
+  .hero {
+    padding: 80px 0 72px;
+    background:
+      radial-gradient(1100px 380px at 90% -5%, rgba(201,161,74,.07), transparent 60%),
+      radial-gradient(800px 340px at 0% 100%, rgba(11,31,58,.04), transparent 60%),
+      var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(11,31,58,.04) 1px, transparent 0);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
+  .hero .wrap {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .hero-left .kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .hero-left .kicker .line {
+    height: 1px;
+    width: 48px;
+    background: var(--gold);
+    opacity: .5;
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 5vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+    color: var(--primary);
+  }
+
+  .hero h1 .worry {
+    font-style: italic;
+    color: var(--primary);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .hero h1 .worry::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: 60%;
+    height: 12px;
+    background: var(--gold);
+    opacity: .18;
+    z-index: -1;
+    transform: skew(-3deg);
+    border-radius: 2px;
+  }
+
+  .hero h1 .five { color: var(--gold); font-style: italic; }
+  .hero h1 .way { font-style: italic; }
+
+  .hero-lede {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-soft);
+    max-width: 480px;
+    margin-bottom: 32px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Hero Contact Form */
+  .hero-form {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 28px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+    max-width: 480px;
+  }
+
+  .hero-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold) 0 40%, var(--primary) 40% 100%);
+  }
+
+  .hero-form h3 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+    line-height: 1.25;
+  }
+
+  .hero-form p.sm {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 20px;
+    line-height: 1.55;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .hero-form p.sm strong { color: var(--gold-deep); }
+
+  .hf-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .hf-field {
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .hf-field label {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: var(--white);
+    padding: 0 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    z-index: 1;
+  }
+
+  .hf-field input {
+    width: 100%;
+    border: 1.5px solid var(--rule);
+    background: var(--white);
+    padding: 13px 14px;
+    font: 14px 'Inter', sans-serif;
+    color: var(--text);
+    outline: none;
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .hf-field input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(11,31,58,.08);
+  }
+
+  .hf-field input::placeholder { color: #B0BAC9; }
+
+  .hf-submit {
+    width: 100%;
+    background: var(--gold);
+    color: var(--primary-deep);
+    border: none;
+    padding: 15px;
+    font: 600 14px 'Inter Tight', sans-serif;
+    cursor: pointer;
+    margin-top: 12px;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 12px rgba(201,161,74,.35);
+  }
+
+  .hf-submit:hover {
+    background: var(--gold-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(201,161,74,.45);
+  }
+
+  .hf-submit:active { transform: translateY(0); }
+
+  .hf-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== PHOTO SCATTER ========== */
+  .scatter {
+    position: relative;
+    height: 600px;
+  }
+
+  .photo {
+    position: absolute;
+    background: #fdfcf7;
+    padding: 10px 10px 52px;
+    box-shadow: 0 20px 36px -10px rgba(11,31,58,.28), 0 6px 12px -4px rgba(11,31,58,.16);
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s;
+    will-change: transform;
+    border-radius: 2px;
+  }
+
+  .photo .name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+    transform: rotate(-1deg);
+  }
+
+  .photo .tape {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 64px;
+    height: 18px;
+    background: rgba(201,161,74,.4);
+    mix-blend-mode: multiply;
+    border-radius: 2px;
+  }
+
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(.1) saturate(.92) contrast(.97) brightness(1.02);
+  }
+
+  .photo .imgwrap {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #efe8d8;
+    overflow: hidden;
+    border-radius: 1px;
+  }
+
+  .photo:hover {
+    transform: translate(var(--tx,0), var(--ty,0)) rotate(var(--rz,0)) scale(1.06) !important;
+    z-index: 50;
+    box-shadow: 0 32px 56px -10px rgba(11,31,58,.35), 0 10px 20px -4px rgba(11,31,58,.2);
+  }
+
+  /* ========== PROOF BAR ========== */
+  .proof {
+    background: var(--primary);
+    color: #C8D6E8;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+
+  .proof .wrap {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0;
+  }
+
+  .proof .cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 28px 24px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    transition: background var(--transition);
+  }
+
+  .proof .cell:last-child { border-right: none; }
+  .proof .cell:hover { background: rgba(255,255,255,.03); }
+
+  .proof .icon {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    background: rgba(201,161,74,.12);
+    color: var(--gold);
+    border: 1px solid rgba(201,161,74,.25);
+    border-radius: var(--radius-sm);
+  }
+
+  .proof .txt .n {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .proof .txt .n em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  .proof .txt .l {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8FA8C8;
+    margin-top: 5px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== WHY CHOOSE ========== */
+  .why {
+    padding: 120px 0;
+    background: var(--bg);
+  }
+
+  .why .wrap {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .why h2 {
+    margin-top: 14px;
+    margin-bottom: 24px;
+  }
+
+  .why h2 em { color: var(--gold); font-style: italic; }
+
+  .why-pain {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-soft);
+    max-width: 540px;
+    margin-bottom: 28px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .why-pain strong { color: var(--text); font-weight: 600; }
+
+  .pain-list {
+    list-style: none;
+    margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 520px;
+  }
+
+  .pain-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 15px;
+    color: var(--text-soft);
+    line-height: 1.55;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .pain-list li::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(201,161,74,.15);
+    background-image: radial-gradient(circle at 50% 50%, var(--gold) 30%, transparent 32%);
+    flex: none;
+    margin-top: 3px;
+  }
+
+  .plan-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 560px;
+    margin-bottom: 36px;
+  }
+
+  .plan-step {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 20px 18px 22px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  }
+
+  .plan-step:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--gold);
+  }
+
+  .plan-step .n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+  }
+
+  .plan-step .t {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin: 8px 0 6px;
+    color: var(--primary);
+    letter-spacing: -0.01em;
+  }
+
+  .plan-step .d {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .why-ctas {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Inter Tight', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-mid);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-ghost {
+    padding: 14px 22px;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Inter Tight', sans-serif;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+    letter-spacing: 0.02em;
+  }
+
+  .btn-ghost:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .why-img {
+    position: relative;
+    aspect-ratio: 4/5;
+    background: linear-gradient(160deg, #EEE8DC 0%, #E4DDD0 100%);
+    overflow: visible;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .why-img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 75% 20%, rgba(201,161,74,.12), transparent 55%);
+    z-index: 1;
+    border-radius: var(--radius-md);
+  }
+
+  .why-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    position: relative;
+    z-index: 2;
+    border-radius: var(--radius-md);
+  }
+
+  .why-img .sig {
+    position: absolute;
+    left: -6px;
+    top: -36px;
+    z-index: 3;
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    color: #fff;
+    background: var(--primary);
+    padding: 5px 16px 7px;
+    letter-spacing: 0.01em;
+    transform: rotate(-1.5deg);
+    box-shadow: var(--shadow-md);
+    white-space: nowrap;
+    border-radius: 3px;
+  }
+
+  .why-img .label {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    z-index: 3;
+    background: rgba(249,249,249,.97);
+    padding: 14px 18px;
+    border-left: 3px solid var(--gold);
+    max-width: 72%;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    box-shadow: var(--shadow-md);
+  }
+
+  .why-img .label .n {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.45;
+    font-style: italic;
+  }
+
+  .why-img .label .r {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== WHAT HAPPENS NEXT ========== */
+  .next {
+    background: var(--primary-light);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .next::before {
+    content: '';
+    position: absolute;
+    right: -200px;
+    top: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201,161,74,.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .next .wrap {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+  }
+
+  .next-img {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--white);
+    overflow: visible;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .next-img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11,31,58,.04), transparent 40%);
+    border-radius: var(--radius-md);
+  }
+
+  .next-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius-md);
+  }
+
+  .next-img .badge {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    z-index: 2;
+    background: var(--white);
+    padding: 14px 18px;
+    border-left: 3px solid var(--primary);
+    box-shadow: var(--shadow-md);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .next-img .badge .nm {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--primary);
+  }
+
+  .next-img .badge .rl {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .next h2 {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    color: var(--primary);
+  }
+
+  .next h2 em { color: var(--gold); font-style: italic; }
+
+  .next p.intro {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-soft);
+    max-width: 540px;
+    margin-bottom: 36px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .next-steps {
+    list-style: none;
+    counter-reset: s;
+  }
+
+  .next-steps li {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 22px 0;
+    border-top: 1px solid rgba(11,31,58,.1);
+  }
+
+  .next-steps li:last-child { border-bottom: 1px solid rgba(11,31,58,.1); }
+
+  .next-steps li::before {
+    counter-increment: s;
+    content: "0" counter(s);
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .next-steps .t {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--primary);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .next-steps .d {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== SERVICES ========== */
+  .services {
+    background: var(--primary);
+    color: #C8D6E8;
+    padding: 110px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .services::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.02) 1px, transparent 0);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .services .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 56px;
+    gap: 40px;
+    position: relative;
+  }
+
+  .services h2 {
+    margin-top: 12px;
+    color: #fff;
+  }
+
+  .services h2 em { color: var(--gold); font-style: italic; }
+
+  .services .head p {
+    max-width: 340px;
+    color: #8FA8C8;
+    font-size: 15px;
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    position: relative;
+  }
+
+  .svc {
+    position: relative;
+    overflow: hidden;
+    background: var(--primary-mid);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+
+  .svc:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px rgba(0,0,0,.35);
+  }
+
+  .svc .bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .svc .bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11,31,58,.08) 0%, rgba(11,31,58,.5) 50%, rgba(11,31,58,.92) 100%);
+    z-index: 1;
+    border-radius: var(--radius-md);
+  }
+
+  .svc .bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(.2) contrast(1.05) brightness(.9);
+    border-radius: var(--radius-md);
+  }
+
+  .svc .content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .svc .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 2;
+  }
+
+  .svc .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,.6);
+    letter-spacing: 0.14em;
+  }
+
+  .svc h3 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  .svc .d {
+    font-size: 13px;
+    color: #B8CCE4;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .svc .arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.75);
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    transition: color var(--transition), gap var(--transition);
+  }
+
+  .svc:hover .arrow {
+    color: var(--gold);
+    gap: 12px;
+  }
+
+  /* ========== REVIEWS ========== */
+  .reviews {
+    background: var(--bg-warm);
+    padding: 100px 0 120px;
+    overflow: hidden;
+  }
+
+  .reviews .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 0 auto 48px;
+    padding: 0 32px;
+    max-width: 1200px;
+    gap: 40px;
+  }
+
+  .reviews h2 em { color: var(--gold); font-style: italic; }
+
+  .reviews .gmeta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .reviews .gmeta .stars {
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-size: 15px;
+  }
+
+  .marquee {
+    position: relative;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .marquee .track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: slide 60s linear infinite;
+  }
+
+  .marquee.reverse .track { animation: slide-r 65s linear infinite; }
+  .marquee + .marquee { margin-top: 20px; }
+
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes slide-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+  .card {
+    flex: none;
+    width: 400px;
+    background: var(--white);
+    padding: 24px 26px;
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card .who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card .av {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 13px;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  .card .nm {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  .card .dt {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .card .stars { color: var(--gold); letter-spacing: 2px; }
+
+  .card blockquote {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+  }
+
+  .card .g {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== COMPARISON ========== */
+  .compare {
+    background: var(--bg);
+    padding: 120px 0;
+  }
+
+  .compare .head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 56px;
+  }
+
+  .compare h2 em { color: var(--gold); font-style: italic; }
+
+  .compare .head p {
+    font-size: 16px;
+    color: var(--text-soft);
+    line-height: 1.65;
+    margin-top: 16px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .cmp-table {
+    border: 1px solid var(--rule);
+    background: var(--white);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .cmp-row + .cmp-row { border-top: 1px solid var(--rule); }
+  .cmp-row:hover:not(.cmp-head) { background: var(--bg); }
+
+  .cmp-cell {
+    padding: 18px 22px;
+    font-size: 14px;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 1px solid var(--rule);
+    font-family: 'Inter', sans-serif;
+    transition: background var(--transition);
+  }
+
+  .cmp-cell:last-child { border-right: none; }
+
+  .cmp-head { background: var(--primary); }
+
+  .cmp-head .cmp-cell {
+    color: #C8D6E8;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 20px 22px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  .cmp-head .cmp-cell.us {
+    background: var(--gold);
+    color: var(--primary-deep);
+  }
+
+  .cmp-head .cmp-cell.us span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cmp-head .cmp-cell.us span::before {
+    content: '★';
+    font-size: 14px;
+  }
+
+  .cmp-feat {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  .cmp-cell.us {
+    background: #FFF9EE;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .cmp-yes { color: #1E8A4E; font-size: 17px; }
+  .cmp-no { color: #CC3333; font-size: 17px; }
+  .cmp-part { color: #A07000; font-size: 14px; font-style: italic; }
+
+  .cmp-foot {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ========== OFFICES ========== */
+  .offices {
+    background: var(--primary-light);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .offices .head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: flex-end;
+    margin-bottom: 56px;
+  }
+
+  .offices h2 em { color: var(--primary); font-style: italic; }
+
+  .offices .head p {
+    font-size: 16px;
+    color: var(--text-soft);
+    line-height: 1.65;
+    max-width: 400px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .offices .body {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .map-wrap {
+    position: relative;
+    aspect-ratio: 4/4;
+    background: #CFE4F1;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .map-label {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    z-index: 500;
+    background: rgba(11,31,58,.9);
+    color: #fff;
+    padding: 8px 14px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
+
+  .office-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .office {
+    background: var(--white);
+    padding: 18px 20px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+  }
+
+  .office:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: var(--shadow-md);
+  }
+
+  .office .loc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+  }
+
+  .office .n {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin: 4px 0 6px;
+    color: var(--primary);
+    letter-spacing: -0.01em;
+  }
+
+  .office .a {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .office .ph {
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 600;
+    margin-top: 8px;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  /* ========== BLOG ========== */
+  .blog {
+    background: var(--bg);
+    padding: 120px 0;
+  }
+
+  .blog .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+    gap: 40px;
+  }
+
+  .blog h2 em { color: var(--primary); font-style: italic; }
+
+  .blog .head .all {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    transition: color var(--transition);
+    white-space: nowrap;
+  }
+
+  .blog .head .all:hover { color: var(--gold-deep); }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: transform var(--transition);
+  }
+
+  .post:hover { transform: translateY(-4px); }
+
+  .post .thumb {
+    aspect-ratio: 3/2;
+    overflow: hidden;
+    background: var(--bg-warm);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .post .thumb .ph {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s cubic-bezier(.2,.8,.2,1);
+    border-radius: var(--radius-md);
+  }
+
+  .post:hover .thumb .ph { transform: scale(1.04); }
+
+  .post .cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+  }
+
+  .post .date {
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+  }
+
+  .post .meta {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .post h3 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+  }
+
+  .post p {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .post .rd {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    font-weight: 600;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--primary-deep);
+    color: #8FA8C8;
+    padding: 80px 0 40px;
+  }
+
+  footer .wrap {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+    gap: 52px;
+  }
+
+  footer h4 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  footer ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  footer ul a { transition: color var(--transition); }
+  footer ul a:hover { color: var(--gold); }
+
+  footer .brand img {
+    height: 40px;
+    filter: brightness(0) invert(1) opacity(.9);
+    margin-bottom: 18px;
+  }
+
+  footer .brand p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #7A8EAA;
+    max-width: 300px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  footer .phone {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #7A8EAA;
+    font-family: 'Inter', sans-serif;
+  }
+
+  footer .phone strong {
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+  }
+
+  footer .bottom {
+    border-top: 1px solid rgba(255,255,255,.08);
+    margin-top: 60px;
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #5A7090;
+    font-family: 'Inter', sans-serif;
+  }
+
+  footer .qls-badge {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: rgba(201,161,74,.1);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  footer .qls-badge .label {
+    font-size: 11px;
+    color: #7A8EAA;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  footer .qls-badge .name {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  /* ========== TWEAKS ========== */
+  #tweaks {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 280px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    padding: 20px;
+    z-index: 1000;
+    display: none;
+    font-size: 13px;
+  }
+
+  #tweaks.open { display: block; }
+
+  #tweaks h5 {
+    margin-bottom: 14px;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--primary);
+  }
+
+  #tweaks .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-soft);
+  }
+
+  #tweaks .swatches { display: flex; gap: 6px; }
+
+  #tweaks .sw {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--white);
+    outline: 1px solid var(--rule);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform var(--transition);
+  }
+
+  #tweaks .sw:hover { transform: scale(1.15); }
+  #tweaks .sw.active { outline: 2px solid var(--primary); }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1100px) {
+    .proof .wrap {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .proof .cell:nth-child(3) { border-right: none; }
+    .proof .cell:nth-child(4) { border-right: 1px solid rgba(255,255,255,.08); }
+
+    .svc-grid { grid-template-columns: repeat(2, 1fr); }
+
+    footer .wrap {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 36px;
+    }
+
+    .topbar .right { display: none; }
+  }
+
+  @media (max-width: 900px) {
+    .hero .wrap {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+
+    .hero { padding: 60px 0 56px; }
+
+    .scatter { height: 420px; }
+
+    .hero-form, .hero-lede { max-width: 100%; }
+
+    .why .wrap {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+
+    .why-img { max-width: 480px; margin: 0 auto; }
+
+    .next .wrap {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+
+    .next-img { max-width: 420px; margin: 0 auto; aspect-ratio: 4/3; }
+
+    .offices .head { grid-template-columns: 1fr; gap: 16px; }
+
+    .offices .body {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .blog-grid { grid-template-columns: 1fr 1fr; }
+
+    .cmp-table { overflow-x: auto; }
+    .cmp-row { min-width: 700px; }
+  }
+
+  @media (max-width: 768px) {
+    .wrap { padding: 0 20px; }
+
+    .navlinks {
+      display: none;
+    }
+
+    nav.primary .wrap { height: 66px; }
+    .logo img { height: 36px; }
+
+    .nav-cta.mobile-show {
+      display: flex;
+      font-size: 13px;
+      padding: 10px 16px;
+    }
+
+    h2.section-title { font-size: clamp(28px, 7vw, 42px); }
+
+    .proof .wrap { grid-template-columns: repeat(2, 1fr); }
+    .proof .cell:nth-child(2) { border-right: none; }
+    .proof .cell:nth-child(3) { border-right: 1px solid rgba(255,255,255,.08); }
+
+    .why, .next, .services, .reviews, .compare, .offices, .blog { padding: 80px 0; }
+
+    .plan-row { grid-template-columns: 1fr; max-width: 100%; }
+
+    .why-ctas { flex-direction: column; align-items: flex-start; }
+
+    .svc-grid { grid-template-columns: 1fr; gap: 12px; }
+    .svc { min-height: 220px; }
+
+    .blog-grid { grid-template-columns: 1fr; }
+
+    .office-list { grid-template-columns: 1fr; }
+
+    footer .wrap {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    footer .brand { grid-column: 1 / -1; }
+
+    .reviews .head { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+    .hf-row { grid-template-columns: 1fr; }
+
+    .topbar .wrap { justify-content: center; }
+  }
+
+  @media (max-width: 500px) {
+    .hero h1 { font-size: clamp(32px, 9vw, 52px); }
+
+    .proof .wrap { grid-template-columns: 1fr; }
+    .proof .cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .proof .cell:last-child { border-bottom: none; }
+
+    footer .wrap { grid-template-columns: 1fr; }
+
+    .scatter { display: none; }
+  }
+
+  /* ============================================================
+     TYPOGRAPHY SYSTEM — PREMIUM REFINEMENT LAYER
+     Fonts: DM Serif Display (headings) · Inter Tight (UI/sub)
+            Inter (body) · JetBrains Mono (labels)
+     Strict override: layout, colors, spacing untouched.
+  ============================================================ */
+
+  /* ----- Global base ----- */
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;          /* 16px */
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ----- Heading base: DM Serif Display ----- */
+  h1, h2, h3, h4, h5, h6,
+  .hero h1,
+  h2.section-title,
+  .hero-form h3,
+  .plan-step .t,
+  .next-steps .t,
+  .svc h3,
+  .office .n,
+  .post h3,
+  footer h4,
+  .next-img .badge .nm,
+  .why-img .label .n,
+  .proof .txt .n,
+  #tweaks h5 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+
+  /* ----- H1 ----- */
+  h1,
+  .hero h1 {
+    font-size: clamp(32px, 5.5vw, 48px);
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+    font-weight: 400;
+  }
+
+  /* ----- H2 ----- */
+  h2,
+  h2.section-title {
+    font-size: clamp(28px, 4vw, 36px);
+    line-height: 1.18;
+    letter-spacing: -0.3px;
+    font-weight: 400;
+  }
+
+  /* ----- H3 ----- */
+  h3,
+  .hero-form h3,
+  .svc h3,
+  .post h3 {
+    font-size: clamp(22px, 3vw, 28px);
+    line-height: 1.22;
+    letter-spacing: -0.2px;
+    font-weight: 400;
+  }
+
+  /* ----- H4 ----- */
+  h4,
+  footer h4,
+  .next-img .badge .nm {
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.15px;
+  }
+
+  /* ----- H5 ----- */
+  h5,
+  #tweaks h5,
+  .plan-step .t,
+  .next-steps .t {
+    font-size: 18px;
+    line-height: 1.28;
+    letter-spacing: -0.1px;
+  }
+
+  /* ----- H6 / small headings ----- */
+  h6,
+  .office .n {
+    font-size: 16px;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+
+  /* ----- Subheadings & UI labels: Inter Tight ----- */
+  .eyebrow,
+  .navlinks a,
+  .nav-cta,
+  .btn-primary,
+  .btn-ghost,
+  .hf-submit,
+  .topbar,
+  .topbar .wrap,
+  .svc .arrow,
+  .post .rd,
+  .blog .head .all,
+  .cmp-feat,
+  .cmp-head .cmp-cell,
+  .office .ph,
+  footer .brand strong,
+  footer .phone strong,
+  .proof .txt .l,
+  .next-img .badge .rl,
+  .why-img .label .r,
+  .office .loc {
+    font-family: 'Inter Tight', sans-serif;
+  }
+
+  /* Nav links specifically */
+  .navlinks a {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+  }
+
+  /* CTAs / buttons */
+  .nav-cta,
+  .btn-primary,
+  .btn-ghost,
+  .hf-submit {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+  }
+
+  /* ----- Body text: Inter ----- */
+  p,
+  .hero-lede,
+  .why-pain,
+  .pain-list li,
+  .plan-step .d,
+  .next p.intro,
+  .next-steps .d,
+  .svc .d,
+  .compare .head p,
+  .offices .head p,
+  .card blockquote,
+  .post p,
+  footer .brand p,
+  footer ul,
+  .hf-foot,
+  .cmp-foot,
+  .hero-form p.sm,
+  .topbar .right,
+  .office .a,
+  .cmp-cell,
+  .reviews .gmeta,
+  footer .phone,
+  #tweaks .row {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;          /* 16px */
+    line-height: 1.75;
+    letter-spacing: 0;
+  }
+
+  /* Hero lede slightly larger */
+  .hero-lede {
+    font-size: 17px;
+    line-height: 1.7;
+    font-weight: 400;
+    max-width: 62ch;
+  }
+
+  /* Why-pain paragraph */
+  .why-pain {
+    font-size: 17px;
+    line-height: 1.75;
+    font-weight: 400;
+    max-width: 65ch;
+  }
+
+  /* Next intro */
+  .next p.intro {
+    font-size: 17px;
+    line-height: 1.72;
+    max-width: 62ch;
+  }
+
+  /* Pain list items */
+  .pain-list li {
+    font-size: 15px;
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  /* ----- Small / supporting text: 14px Inter ----- */
+  .plan-step .d,
+  .next-steps .d,
+  .svc .d,
+  .card blockquote,
+  .post p,
+  footer .brand p,
+  footer ul,
+  .hero-form p.sm,
+  .office .a,
+  .cmp-foot,
+  .why-img .label .n,
+  .card .dt,
+  .card .g,
+  .post .date,
+  .hf-foot,
+  #tweaks .row {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* Footer body copy */
+  footer .brand p {
+    font-size: 14px;
+    line-height: 1.7;
+    font-weight: 400;
+    max-width: 38ch;
+  }
+
+  /* Footer lists */
+  footer ul {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Card blockquotes */
+  .card blockquote {
+    font-size: 14px;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* Review card name */
+  .card .nm {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  /* Service card heading override */
+  .svc h3 {
+    font-size: clamp(20px, 2.5vw, 26px);
+    line-height: 1.2;
+    letter-spacing: -0.2px;
+  }
+
+  /* Comparison table feat */
+  .cmp-feat {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0;
+  }
+
+  /* Comparison table header */
+  .cmp-head .cmp-cell {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+  }
+
+  /* Comparison table body */
+  .cmp-cell {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Office card name */
+  .office .n {
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.1px;
+    font-weight: 400;
+  }
+
+  /* Office phone */
+  .office .ph {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Proof bar numbers */
+  .proof .txt .n {
+    font-size: 20px;
+    line-height: 1.15;
+    letter-spacing: -0.15px;
+  }
+
+  /* Proof bar labels */
+  .proof .txt .l {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+  }
+
+  /* Eyebrow / mono labels */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: 1.4;
+  }
+
+  /* Next steps counter headings */
+  .next-steps .t {
+    font-size: 19px;
+    line-height: 1.28;
+    font-weight: 400;
+    letter-spacing: -0.1px;
+  }
+
+  .next-steps .d {
+    font-size: 14px;
+    line-height: 1.68;
+    font-weight: 400;
+  }
+
+  /* Plan step headings */
+  .plan-step .t {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -0.1px;
+  }
+
+  .plan-step .d {
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Footer headings */
+  footer h4 {
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.1px;
+    font-weight: 400;
+  }
+
+  /* Footer phone strong */
+  footer .phone strong {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+  }
+
+  /* Blog post titles */
+  .post h3 {
+    font-size: clamp(20px, 2.2vw, 24px);
+    line-height: 1.25;
+    letter-spacing: -0.15px;
+  }
+
+  /* Topbar text */
+  .topbar,
+  .topbar .wrap,
+  .topbar .left,
+  .topbar .right {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+  }
+
+  /* Form labels */
+  .hf-field label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+  }
+
+  /* Form input text */
+  .hf-field input {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* Hero form heading */
+  .hero-form h3 {
+    font-size: 22px;
+    line-height: 1.28;
+    letter-spacing: -0.15px;
+  }
+
+  /* Hero form supporting text */
+  .hero-form p.sm {
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Strong / bold text in body */
+  strong, b {
+    font-weight: 600;
+  }
+
+  /* Next section badge */
+  .next-img .badge .nm {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .next-img .badge .rl {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+  }
+
+  /* Why image label */
+  .why-img .label .n {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .why-img .label .r {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+  }
+
+  /* Google reviews meta */
+  .reviews .gmeta {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* "Read — X min" links */
+  .post .rd {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+  }
+
+  /* Post category */
+  .post .cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+  }
+
+  /* Post date */
+  .post .date {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  /* View all posts link */
+  .blog .head .all {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+
+  /* Comparison foot note */
+  .cmp-foot {
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Office location label */
+  .office .loc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+  }
+
+  /* Office address */
+  .office .a {
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Services arrow */
+  .svc .arrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+  }
+
+  /* Services description */
+  .svc .d {
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  /* Tweaks panel */
+  #tweaks h5 {
+    font-size: 18px;
+    line-height: 1.28;
+    letter-spacing: -0.1px;
+  }
+
+  #tweaks .row {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ---- RESPONSIVE TYPOGRAPHY ---- */
+
+  @media (max-width: 900px) {
+    html { font-size: 15.5px; }
+
+    h1, .hero h1 {
+      font-size: clamp(30px, 6vw, 42px);
+      line-height: 1.14;
+    }
+
+    h2, h2.section-title {
+      font-size: clamp(26px, 5vw, 34px);
+    }
+
+    h3, .hero-form h3, .svc h3, .post h3 {
+      font-size: clamp(20px, 4vw, 26px);
+    }
+
+    .hero-lede,
+    .why-pain,
+    .next p.intro {
+      font-size: 16px;
+      line-height: 1.7;
+    }
+  }
+
+  @media (max-width: 768px) {
+    html { font-size: 15px; }
+
+    body {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    h1, .hero h1 {
+      font-size: 32px;
+      line-height: 1.16;
+      letter-spacing: -0.3px;
+    }
+
+    h2, h2.section-title {
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    h3, .hero-form h3, .svc h3, .post h3 {
+      font-size: 22px;
+      line-height: 1.24;
+    }
+
+    h4, footer h4, .next-img .badge .nm { font-size: 20px; }
+    h5, #tweaks h5, .plan-step .t, .next-steps .t { font-size: 17px; }
+
+    .hero-lede,
+    .why-pain,
+    .next p.intro {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    p,
+    .pain-list li,
+    .cmp-cell,
+    footer ul,
+    .card blockquote {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .plan-step .d,
+    .next-steps .d,
+    .svc .d,
+    .post p,
+    footer .brand p,
+    .hero-form p.sm,
+    .office .a,
+    .cmp-foot {
+      font-size: 14px;
+      line-height: 1.62;
+    }
+
+    .navlinks a { font-size: 14px; }
+
+    .btn-primary,
+    .btn-ghost,
+    .hf-submit {
+      font-size: 14px;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  @media (max-width: 500px) {
+    html { font-size: 15px; }
+
+    h1, .hero h1 {
+      font-size: 30px;
+      line-height: 1.18;
+    }
+
+    h2, h2.section-title {
+      font-size: 26px;
+    }
+
+    h3, .svc h3, .post h3 {
+      font-size: 21px;
+    }
+
+    body,
+    p,
+    .pain-list li {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .hero-lede,
+    .why-pain,
+    .next p.intro {
+      font-size: 15px;
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body data-screen-label="Home">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="left">
+        <span class="dot"></span>
+        <span>Available 24/7 — call us anytime</span>
+      </div>
+      <div class="right">
+        <a href="#">Brisbane · Gold Coast · Sunshine Coast · Ipswich · Logan · North Lakes · Toowoomba · Hervey Bay</a>
+        <a href="tel:1300952255">☎ 1300 952 255</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="primary">
+    <div class="wrap">
+      <a href="#" class="logo" aria-label="Clarity Law"><img src="assets/logo.jpg" alt="Clarity Law"></a>
+      <div class="navlinks">
+        <a href="#" class="first">First Charge?</a>
+        <a href="#">Team</a>
+        <a href="#">Services</a>
+        <a href="#">Locations</a>
+        <a href="#">Tools</a>
+        <a href="#">Blog</a>
+        <a href="#" class="nav-cta">Get a fixed quote →</a>
+      </div>
+      <a href="#" class="nav-cta mobile-show" style="display:none">Quote →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" data-screen-label="Hero">
+    <div class="wrap">
+      <div class="hero-left">
+        <div class="kicker">
+          <span class="line"></span>
+          <span class="eyebrow">Queensland Criminal Lawyers · Est. 2010</span>
+        </div>
+        <h1>
+          <span class="worry">Don't worry.</span><br/>
+          We've done this <span class="five">5,000+</span> times —<br/>
+          we know <span class="way">the way through.</span>
+        </h1>
+        <p class="hero-lede">
+          Eight specialist criminal lawyers. Seven offices across Queensland. Fixed prices
+          quoted before we start. A charge is frightening — the process isn't, once you've
+          walked it as many times as we have.
+        </p>
+
+        <!-- CONTACT FORM -->
+        <form class="hero-form" onsubmit="event.preventDefault();alert('Thanks — we will call you shortly.')">
+          <h3>We'll ring you back with advice and a fixed quote.</h3>
+          <p class="sm">Leave your details. A real lawyer — not a chatbot — will call <strong>within 30 minutes</strong> (business hours). No obligation. No cost.</p>
+          <div class="hf-row">
+            <div class="hf-field"><label>Name</label><input type="text" placeholder="Your name" required></div>
+            <div class="hf-field"><label>Phone</label><input type="tel" placeholder="04xx xxx xxx" required></div>
+          </div>
+          <div class="hf-field" style="margin-bottom:0"><label>Email</label><input type="email" placeholder="you@example.com" required></div>
+          <button class="hf-submit" type="submit">Call me back →</button>
+          <div class="hf-foot">
+            <span>🔒 Confidential</span>
+            <span>⏱ Usually 20 min</span>
+            <span>✓ Free advice</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Kodak scatter -->
+      <div class="scatter" aria-hidden="true">
+        <div class="photo p1"><span class="tape"></span><div class="imgwrap"><img src="assets/lawyers/steven.jpg" alt=""></div><div class="name">Steven</div></div>
+        <div class="photo p2"><div class="imgwrap"><img src="assets/lawyers/belinda.jpg" alt=""></div><div class="name">Belinda</div></div>
+        <div class="photo p3"><span class="tape"></span><div class="imgwrap"><img src="assets/lawyers/jack.jpg" alt=""></div><div class="name">Jack</div></div>
+        <div class="photo p4"><div class="imgwrap"><img src="assets/lawyers/sarah-v2.png" alt=""></div><div class="name">Sarah</div></div>
+        <div class="photo p5"><span class="tape"></span><div class="imgwrap"><img src="assets/lawyers/will-v2.png" alt=""></div><div class="name">Will</div></div>
+        <div class="photo p6"><div class="imgwrap"><img src="assets/lawyers/ryan-v2.png" alt=""></div><div class="name">Ryan</div></div>
+        <div class="photo p7"><span class="tape"></span><div class="imgwrap"><img src="assets/lawyers/jacob.jpg" alt=""></div><div class="name">Jacob</div></div>
+        <div class="photo p8"><div class="imgwrap"><img src="assets/lawyers/russell.jpg" alt=""></div><div class="name">Russell</div></div>
+        <div class="photo p9"><div class="imgwrap"><img src="assets/lawyers/braden-v2.png" alt=""></div><div class="name">Braden</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF BAR -->
+  <section class="proof">
+    <div class="wrap">
+      <div class="cell">
+        <div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7L12 17.8 5.7 21.2l1.7-7L2 9.5l7.1-.6L12 2z"/></svg></div>
+        <div class="txt"><div class="n"><em>4.9★</em> on Google</div><div class="l">1,200+ reviews</div></div>
+      </div>
+      <div class="cell">
+        <div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg></div>
+        <div class="txt"><div class="n">Member <em>QLS</em></div><div class="l">Queensland Law Society</div></div>
+      </div>
+      <div class="cell">
+        <div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7 7-12a7 7 0 10-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <div class="txt"><div class="n"><em>8</em> offices in QLD</div><div class="l">Across Queensland</div></div>
+      </div>
+      <div class="cell">
+        <div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="10" r="2.6"/><path d="M3 20c1-3 3.5-4.5 6-4.5s5 1.5 6 4.5M14 20c.6-2 2.2-3.2 4-3.2s3.3 1 4 3"/></svg></div>
+        <div class="txt"><div class="n"><em>8</em> experienced lawyers</div><div class="l">Criminal Experts</div></div>
+      </div>
+      <div class="cell">
+        <div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M7 15h4"/></svg></div>
+        <div class="txt"><div class="n"><em>Fixed</em> prices</div><div class="l">Quoted upfront</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE -->
+  <section class="why" data-screen-label="Why Clarity">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Why Clarity</span>
+        <h2 class="section-title">A charge doesn't make you a criminal.<br/>But the wrong lawyer <em>can cost you everything.</em></h2>
+        <p class="why-pain">
+          Right now you're probably not sleeping. You're <strong>googling sentences at 2am.</strong>
+          Wondering if you'll lose your job, your licence, the families future. Wondering what
+          to tell your partner. Wondering if you need a lawyer at all — and if you do, how
+          you're supposed to pick one when every website says the same thing.
+        </p>
+        <ul class="pain-list">
+          <li>You don't know what you don't know — and the stakes are your freedom.</li>
+          <li>Every hour of silence from a lawyer is an hour your worry gets louder.</li>
+          <li>"Call for a quote" usually means an hour on the phone, no price, more stress.</li>
+        </ul>
+
+        <div class="plan-row">
+          <div class="plan-step"><div class="n">STEP 01</div><div class="t">You call</div><div class="d">One 20-minute call. No meter running.</div></div>
+          <div class="plan-step"><div class="n">STEP 02</div><div class="t">We plan</div><div class="d">A clear strategy and fixed quote in writing.</div></div>
+          <div class="plan-step"><div class="n">STEP 03</div><div class="t">You breathe</div><div class="d">We handle the court. You handle your life.</div></div>
+        </div>
+
+        <div class="why-ctas">
+          <a href="#" class="btn-primary">Talk to a lawyer today →</a>
+          <a href="#" class="btn-ghost">What happens in court ↗</a>
+        </div>
+      </div>
+
+      <div class="why-img">
+        <div class="sig">Steven &mdash; Founder</div>
+        <img src="assets/lawyers/steven.png" alt="Steven Brough, Director">
+        <div class="label">
+          <div class="n">"One mistake shouldn't define your future. We'll guide you through it and get the best outcome possible."</div>
+          <div class="r">Steven Brough · 25+ yrs Experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT HAPPENS NEXT -->
+  <section class="next" data-screen-label="What Happens Next">
+    <div class="wrap">
+      <div class="next-img">
+        <div style="position:absolute;left:-6px;top:-36px;z-index:3;font-family:'Caveat',cursive;font-size:26px;color:#fff;background:var(--primary);padding:5px 18px 7px;letter-spacing:0.01em;transform:rotate(-1.5deg);box-shadow:var(--shadow-md);white-space:nowrap;border-radius:3px">Belinda &mdash; Client Services Manager</div>
+        <img src="assets/lawyers/belinda-full.png" alt="Belinda, Client Services Manager" style="position:relative;z-index:1">
+        <div class="badge">
+          <div class="nm">Belinda</div>
+          <div class="rl">Client Services Manager</div>
+          <div style="font-family:'Inter',sans-serif;font-style:italic;font-size:13px;color:var(--text-soft);margin-top:8px;line-height:1.45;border-top:1px solid var(--rule);padding-top:8px;max-width:220px">"I'm here to make a stressful moment a little easier — starting with your very first call."<br/><span style="font-family:'JetBrains Mono',monospace;font-style:normal;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);display:block;margin-top:6px">24 Years Experience</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">What happens when you contact us</span>
+        <h2 class="section-title">No scripts. No sales pitch. <em>Just a human, a plan, and a price.</em></h2>
+        <p class="intro">
+          I'm Belinda — I answer the phone. The moment you reach out, here's exactly what
+          happens next. No hidden steps, no bait-and-switch, no waiting days to hear back.
+        </p>
+        <ol class="next-steps">
+          <li><div><div class="t">Your call reaches me — a real person</div><div class="d">Not a call centre. Not a chatbot. Not AI. A real person with 25 years experience.</div></div></li>
+          <li><div><div class="t">I'll talk you through your charge and what comes next</div><div class="d">I'll listen carefully, explain what the charge means in plain English, walk you through the court process, and give you a clear, fixed-price quote — no obligation, no pressure.</div></div></li>
+          <li><div><div class="t">You get a fixed price — in writing, before we start</div><div class="d">No hourly surprises. No "it depends". One quote covering the whole matter, emailed to you the same day.</div></div></li>
+          <li><div><div class="t">You decide — on your own time</div><div class="d">We never pressure. Take the quote home, sleep on it, compare it. We'll be here when you're ready.</div></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" data-screen-label="Services">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <span class="eyebrow" style="color:var(--gold)">What we handle</span>
+          <h2 class="section-title">If it's a criminal charge in Queensland, <em>we've run it.</em></h2>
+        </div>
+        <p>Every matter we take is criminal or traffic — that's the only thing we do. Pick the closest match below, or call us and we'll point you in the right direction.</p>
+      </div>
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="reviews" data-screen-label="Reviews">
+    <div class="head">
+      <div>
+        <span class="eyebrow">From our clients</span>
+        <h2 class="section-title">Words from the <em>other side of it.</em></h2>
+      </div>
+      <div class="gmeta"><div><span class="stars">★★★★★</span> &nbsp;<strong>4.9</strong> · 1,248 Google reviews</div></div>
+    </div>
+    <div class="marquee"><div class="track" id="track1"></div></div>
+    <div class="marquee reverse"><div class="track" id="track2"></div></div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="compare" data-screen-label="Compare">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Clarity vs. the rest</span>
+        <h2 class="section-title">Why clients keep choosing us <em>over general-practice firms.</em></h2>
+        <p>Most firms dabble in criminal law between wills and divorces. We don't. It's the only thing we do — and it's the difference you feel the moment you walk into court.</p>
+      </div>
+
+      <div class="cmp-table">
+        <div class="cmp-row cmp-head">
+          <div class="cmp-cell cmp-feat">What matters</div>
+          <div class="cmp-cell us"><span>Clarity Law</span></div>
+          <div class="cmp-cell">General-practice firm</div>
+          <div class="cmp-cell">Big-city CBD firm</div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">Criminal law only — 100% focus</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> Always</div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> Dabbles between matters</div>
+          <div class="cmp-cell"><span class="cmp-part">Sometimes</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">Fixed fees quoted upfront</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> In writing, before we start</div>
+          <div class="cmp-cell"><span class="cmp-part">"We'll see"</span></div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> Hourly, 6-min units</div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">Local lawyer in your local court</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> 8 offices across QLD</div>
+          <div class="cmp-cell"><span class="cmp-part">One town only</span></div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> Flies out from Brisbane</div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">Same-day callback</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> Within 30 min (business hours)</div>
+          <div class="cmp-cell"><span class="cmp-part">Next business day</span></div>
+          <div class="cmp-cell"><span class="cmp-part">"Leave a message"</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">5,000+ criminal matters run</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> Since 2010</div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> Rarely</div>
+          <div class="cmp-cell"><span class="cmp-part">Partners only</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">Plain-English advice</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> Always</div>
+          <div class="cmp-cell"><span class="cmp-part">Depends on lawyer</span></div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> Billable legalese</div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-cell cmp-feat">After-hours support</div>
+          <div class="cmp-cell us"><span class="cmp-yes">✓</span> 24/7 for existing clients</div>
+          <div class="cmp-cell"><span class="cmp-no">✗</span> 9–5 only</div>
+          <div class="cmp-cell"><span class="cmp-part">Duty lawyer referral</span></div>
+        </div>
+      </div>
+      <div class="cmp-foot">Comparison based on publicly-stated service levels at competitor firms. Updated 2026.</div>
+    </div>
+  </section>
+
+  <!-- OFFICES -->
+  <section class="offices" data-screen-label="Offices">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <span class="eyebrow">Where to find us</span>
+          <h2 class="section-title">Eight offices. Eight court networks. <em>One local lawyer for you.</em></h2>
+        </div>
+        <p>We appear in courts all over Queensland — but having a lawyer who knows your magistrate by name isn't a luxury, it's leverage.</p>
+      </div>
+
+      <div class="body">
+        <div class="map-wrap" id="map-wrap">
+          <div id="qld-map" style="width:100%;height:100%;position:absolute;inset:0"></div>
+          <div class="map-label">South East Queensland</div>
+        </div>
+
+        <div class="office-list">
+          <div class="office"><div class="loc">QLD / 01</div><div class="n">Brisbane</div><div class="a">Level 1, 16 McDougall St<br/>Milton QLD 4064</div><div class="ph">07 3067 7017</div></div>
+          <div class="office"><div class="loc">QLD / 02</div><div class="n">Gold Coast</div><div class="a">Level 15, 2 Corporate Court<br/>Bundall QLD 4217</div><div class="ph">07 5613 2683</div></div>
+          <div class="office"><div class="loc">QLD / 03</div><div class="n">Sunshine Coast</div><div class="a">Suite 8, 84 Wises Road<br/>Maroochydore QLD 4558</div><div class="ph">1300 952 255</div></div>
+          <div class="office"><div class="loc">QLD / 04</div><div class="n">North Brisbane</div><div class="a">3/22-24 Strathwyn Street<br/>Brendale QLD 4500</div><div class="ph">07 3485 0184</div></div>
+          <div class="office"><div class="loc">QLD / 05</div><div class="n">Ipswich</div><div class="a">16 East Street<br/>Ipswich QLD 4305</div><div class="ph">07 3485 0147</div></div>
+          <div class="office"><div class="loc">QLD / 06</div><div class="n">Logan</div><div class="a">Level 2, 3972 Pacific Hwy<br/>Loganholme QLD 4129</div><div class="ph">07 3668 0683</div></div>
+          <div class="office"><div class="loc">QLD / 07</div><div class="n">Toowoomba</div><div class="a">123 Margaret Street<br/>Toowoomba QLD 4350</div><div class="ph">1300 952 255</div></div>
+          <div class="office"><div class="loc">QLD / 08</div><div class="n">Hervey Bay</div><div class="a">Unit 3, 6 Liuzzi St<br/>Hervey Bay QLD 4655</div><div class="ph">07 3485 0184</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="blog" data-screen-label="Blog">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <span class="eyebrow">Latest from the team</span>
+          <h2 class="section-title">Things worth <em>knowing before court.</em></h2>
+        </div>
+        <a href="#" class="all">View all posts →</a>
+      </div>
+      <div class="blog-grid">
+        <article class="post">
+          <div class="thumb"><div class="ph" style="background-image:linear-gradient(135deg,#0B1F3A,#1748A0)"></div></div>
+          <div class="meta"><span class="cat">Drink Driving</span><span class="date">15 Apr 2026</span></div>
+          <h3>What a mid-range drink driving charge actually costs you in Queensland in 2026</h3>
+          <p>Fines, licence periods, interlocks and insurance. Here's the full picture, with real numbers.</p>
+          <span class="rd">Read — 6 min</span>
+        </article>
+        <article class="post">
+          <div class="thumb"><div class="ph" style="background-image:linear-gradient(135deg,#A8832F,#C9A14A)"></div></div>
+          <div class="meta"><span class="cat">First Charge?</span><span class="date">08 Apr 2026</span></div>
+          <h3>Just charged? Read this before you say another word to anyone</h3>
+          <p>The five conversations that almost always make things worse — and the one phone call that helps.</p>
+          <span class="rd">Read — 4 min</span>
+        </article>
+        <article class="post">
+          <div class="thumb"><div class="ph" style="background-image:linear-gradient(135deg,#071428,#0B1F3A)"></div></div>
+          <div class="meta"><span class="cat">Court Process</span><span class="date">02 Apr 2026</span></div>
+          <h3>Your first mention: what actually happens when you walk into Magistrates Court</h3>
+          <p>Where to stand, what to wear, what the magistrate will ask — and when not to answer.</p>
+          <span class="rd">Read — 7 min</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.jpg" alt="Clarity Law">
+        <p>Queensland's expert criminal law firm. Eight offices, eight lawyers, one job: getting you the best outcome possible at a fixed price.</p>
+        <div class="phone">
+          <strong>☎ 1300 952 255</strong>
+          Available 7 days · 7am – 7pm
+        </div>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Drink Driving &amp; Traffic</a></li>
+          <li><a href="#">Drug Offences</a></li>
+          <li><a href="#">Assault &amp; Violence</a></li>
+          <li><a href="#">Domestic Violence</a></li>
+          <li><a href="#">Fraud &amp; Dishonesty</a></li>
+          <li><a href="#">Property Offences</a></li>
+          <li><a href="#">Sexual Offences</a></li>
+          <li><a href="#">Bail Applications</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Offices</h4>
+        <ul>
+          <li><a href="#">Brisbane (Milton)</a></li>
+          <li><a href="#">Gold Coast (Bundall)</a></li>
+          <li><a href="#">Sunshine Coast</a></li>
+          <li><a href="#">North Brisbane</a></li>
+          <li><a href="#">Ipswich</a></li>
+          <li><a href="#">Logan</a></li>
+          <li><a href="#">Toowoomba</a></li>
+          <li><a href="#">Hervey Bay</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Tools</a></li>
+          <li><a href="#">First Charge? Guide</a></li>
+          <li><a href="#">Fixed-fee Calculator</a></li>
+          <li><a href="#">Sentencing Guide</a></li>
+          <li><a href="#">Court Locations</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Urgent?</h4>
+        <ul>
+          <li><a href="tel:1300952255">Call 1300 952 255</a></li>
+          <li><a href="#">Email us</a></li>
+          <li><a href="#">Online enquiry</a></li>
+          <li><a href="#">Find my office</a></li>
+        </ul>
+        <div class="qls-badge">
+          <div class="label">Member</div>
+          <div class="name">Queensland Law Society</div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap bottom">
+      <span>© 2026 Clarity Law Pty Ltd · ABN 00 000 000 000</span>
+      <span>Privacy Policy · Terms of Use · QLS member firm</span>
+    </div>
+  </footer>
+
+  <!-- Tweaks panel -->
+  <div id="tweaks" aria-hidden="true">
+    <h5>Tweaks</h5>
+    <div class="row">
+      <span>Accent (gold)</span>
+      <div class="swatches" id="sw-accent">
+        <button class="sw" data-c="#C9A14A" style="background:#C9A14A"></button>
+        <button class="sw" data-c="#A8832F" style="background:#A8832F"></button>
+        <button class="sw" data-c="#D4B06A" style="background:#D4B06A"></button>
+      </div>
+    </div>
+    <div class="row">
+      <span>Brand blue</span>
+      <div class="swatches" id="sw-blue">
+        <button class="sw" data-c="#0B1F3A" style="background:#0B1F3A"></button>
+        <button class="sw" data-c="#132B5E" style="background:#132B5E"></button>
+        <button class="sw" data-c="#1A3260" style="background:#1A3260"></button>
+      </div>
+    </div>
+    <div class="row">
+      <span>Hero layout</span>
+      <select id="sel-hero">
+        <option value="scatter">Kodak scatter</option>
+        <option value="neat">Neater grid</option>
+        <option value="fan">Fan spread</option>
+      </select>
+    </div>
+    <div class="row">
+      <span>Photo sepia</span>
+      <input type="range" id="sel-sepia" min="0" max="60" value="10" />
+    </div>
+  </div>
+
+<script>
+  // TWEAK DEFAULTS
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent":"#C9A14A",
+    "blue":"#0B1F3A",
+    "heroLayout":"scatter",
+    "sepia":10
+  }/*EDITMODE-END*/;
+  const state = Object.assign({}, TWEAK_DEFAULTS);
+
+  function applyState(){
+    document.documentElement.style.setProperty('--gold', state.accent);
+    document.documentElement.style.setProperty('--primary', state.blue);
+    document.querySelectorAll('.photo img').forEach(i=>{
+      i.style.filter = `sepia(${state.sepia/100}) saturate(.92) contrast(.97) brightness(1.02)`;
+    });
+    applyHeroLayout(state.heroLayout);
+  }
+
+  function applyHeroLayout(kind){
+    const photos = document.querySelectorAll('.scatter .photo');
+    if(kind==='scatter'){
+      const presets=[
+        {top:10,left:10,w:220,rz:-9,z:5},
+        {top:-10,left:200,w:210,rz:6,z:7},
+        {top:60,left:340,w:200,rz:-3,z:4},
+        {top:240,left:0,w:210,rz:12,z:6},
+        {top:220,left:180,w:230,rz:-6,z:9},
+        {top:250,left:380,w:190,rz:3,z:5},
+        {top:400,left:70,w:190,rz:-14,z:8},
+        {top:420,left:260,w:200,rz:8,z:10},
+        {top:40,left:500,w:170,rz:-2,z:3}
+      ];
+      photos.forEach((p,i)=>{
+        const v=presets[i]; if(!v) return;
+        p.style.top=v.top+'px'; p.style.left=v.left+'px'; p.style.width=v.w+'px';
+        p.style.transform=`rotate(${v.rz}deg)`; p.style.zIndex=v.z;
+        p.style.setProperty('--rz', v.rz+'deg');
+      });
+    } else if(kind==='neat'){
+      photos.forEach((p,i)=>{
+        const col=i%3, row=Math.floor(i/3);
+        p.style.left=(col*210+10)+'px';
+        p.style.top=(row*210+10)+'px';
+        p.style.width='190px';
+        p.style.transform=`rotate(${(i%2?1:-1)*2}deg)`;
+        p.style.zIndex=i;
+      });
+    } else if(kind==='fan'){
+      photos.forEach((p,i)=>{
+        const angle=(i-4)*6;
+        const r=290; const rad=angle*Math.PI/180;
+        p.style.left=(300+Math.sin(rad)*r-95)+'px';
+        p.style.top=(300-Math.cos(rad)*r+140)+'px';
+        p.style.width='190px';
+        p.style.transform=`rotate(${angle}deg)`;
+        p.style.zIndex=i+1;
+      });
+    }
+  }
+
+  // SERVICES
+  const services = [
+    {t:"Drink Driving & Traffic", d:"Licence-saving outcomes, interlocks, work licences.", img:"assets/svc/drink-driving.png"},
+    {t:"Drug Offences", d:"Possession, supply, trafficking — from mistake to major.", img:"assets/svc/drugs.png"},
+    {t:"Assault & Violence", d:"Common assault, grievous bodily harm, serious violence.", img:"assets/svc/assault.png"},
+    {t:"Domestic Violence", d:"DV orders, breaches, protection orders, court representation.", img:"assets/svc/dv.png"},
+    {t:"Fraud & Dishonesty", d:"Stealing, fraud, serious dishonesty offences.", img:"assets/svc/fraud.png"},
+    {t:"Property Offences", d:"Burglary, unlawful entry, wilful damage.", img:"assets/svc/property.png"},
+    {t:"Sexual Offences", d:"Sensitive matters handled with absolute discretion.", img:"assets/svc/sexual.png"},
+    {t:"Bail Applications", d:"Urgent bail, watchhouse, Supreme Court bail.", img:"assets/svc/bail.png"},
+  ];
+  document.getElementById('svc-grid').innerHTML = services.map((s,i)=>`
+    <a class="svc" href="#">
+      <div class="bg"><img src="${s.img}" alt=""></div>
+      <div class="top"><span class="num">0${i+1}</span></div>
+      <div class="content">
+        <h3>${s.t}</h3>
+        <div class="d">${s.d}</div>
+        <span class="arrow">Learn more →</span>
+      </div>
+    </a>`).join('');
+
+  // REVIEWS
+  const row1 = [
+    {nm:"Emma R.", dt:"2 weeks ago", t:"Genuinely kind people on what was the worst week of my life. Steven explained everything twice because I needed it twice. Charge downgraded, no conviction recorded."},
+    {nm:"Marcus T.", dt:"1 month ago", t:"Fixed fee was exactly what they quoted. No surprise bill at the end. Matter resolved in a single appearance — I couldn't believe how straightforward they made it."},
+    {nm:"Jayden P.", dt:"3 weeks ago", t:"I rang half a dozen firms. Clarity was the only one that actually called me back the same day. That alone told me everything I needed to know."},
+    {nm:"Hannah W.", dt:"5 days ago", t:"Belinda was calm, straight with me, and treated my son with respect throughout. The outcome was so much better than I expected."},
+    {nm:"David K.", dt:"2 months ago", t:"Hoped to never need a criminal lawyer. Glad I found these ones when I did. Professional, local, and absolutely zero lecture about my situation."},
+    {nm:"Sam O.", dt:"6 weeks ago", t:"Drove from Bundaberg. Worth every kilometre. They knew the prosecutor by name and had a clear plan before I'd even sat down properly."},
+    {nm:"Tegan F.", dt:"1 week ago", t:"Jack took my call at 9pm on a Sunday. Who does that? Got bail the next morning. Can't thank him enough."},
+    {nm:"Michael B.", dt:"3 weeks ago", t:"Very impressed with how quickly they responded and how thoroughly they explained my options. Got a no conviction result on a charge I thought was hopeless."},
+    {nm:"Priya N.", dt:"3 months ago", t:"Straightforward, no-fuss, fixed price. They told me what not to worry about — which turned out to be most of it. Huge relief."},
+    {nm:"Ben L.", dt:"2 weeks ago", t:"Will was prepared. So prepared that the other side folded half their case before lunch on the day. Outstanding."},
+  ];
+  const row2 = [
+    {nm:"Rob H.", dt:"4 weeks ago", t:"Second-time client — wish I wasn't, but I'm glad they were still here when I needed them again. Same professionalism, same plain English, same result."},
+    {nm:"Courtney M.", dt:"10 days ago", t:"I was absolutely terrified walking into court. Steven met me outside beforehand, walked me through what would happen, and it went exactly as he said it would."},
+    {nm:"James D.", dt:"5 weeks ago", t:"Russell handled my matter in the Gold Coast Magistrates Court. He knew the magistrate, knew the prosecutor, and got my licence back. Fixed fee, no surprises."},
+    {nm:"Alicia T.", dt:"2 months ago", t:"Called on a Thursday, in court on a Monday, charge dismissed by Wednesday. Belinda kept me updated the whole time. Incredible service."},
+    {nm:"Nathan G.", dt:"3 weeks ago", t:"I was convinced I'd lose my job over this. Jacob got it dealt with quietly and no conviction was recorded. Still can't believe it. Thank you."},
+    {nm:"Sarah-Jane K.", dt:"6 days ago", t:"As a nurse, a conviction would have ended my career. They understood the stakes and fought accordingly. No conviction recorded. I will never forget what they did for me."},
+    {nm:"Chris P.", dt:"7 weeks ago", t:"Called after midnight in a panic. They answered. That set the tone for everything that followed — calm, capable, and on my side the whole way."},
+    {nm:"Melissa O.", dt:"1 month ago", t:"Every single thing they told me would happen, happened exactly as they said. No drama, no confusion. Just a great result and a fixed price that was fair."},
+    {nm:"Dylan F.", dt:"2 weeks ago", t:"Braden represented me at Sunshine Coast. Young guy but absolutely sharp — knew the case inside out, made strong submissions and got the best possible outcome."},
+    {nm:"Karen W.", dt:"5 weeks ago", t:"Steven is the kind of lawyer you hope you never need but are incredibly grateful for when you do. Explained my options clearly, never judged me, got it done."},
+  ];
+  const initials = n => n.split(' ').map(s=>s[0]).join('').slice(0,2);
+  const hues = ["#0B1F3A","#132B5E","#C9A14A","#071428","#1748A0"];
+  function cardHTML(r,i){
+    return `<div class="card"><div class="top"><div class="who"><div class="av" style="background:${hues[i%hues.length]}">${initials(r.nm)}</div><div><div class="nm">${r.nm}</div><div class="dt">${r.dt}</div></div></div><div class="stars">★★★★★</div></div><blockquote>"${r.t}"</blockquote><div class="g">G · Google review</div></div>`;
+  }
+  function fill(id, items){
+    const el=document.getElementById(id);
+    el.innerHTML = items.concat(items).map(cardHTML).join('');
+  }
+  fill('track1', row1);
+  fill('track2', row2);
+
+  // TWEAKS wiring
+  const panel = document.getElementById('tweaks');
+  window.addEventListener('message', (e)=>{
+    const d=e.data||{};
+    if(d.type==='__activate_edit_mode'){ panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); }
+    if(d.type==='__deactivate_edit_mode'){ panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); }
+  });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  function save(patch){
+    Object.assign(state, patch); applyState();
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:patch},'*'); }catch(e){}
+  }
+  function wireSwatches(id,key){
+    const root=document.getElementById(id);
+    root.addEventListener('click',(e)=>{
+      const b=e.target.closest('.sw'); if(!b)return;
+      root.querySelectorAll('.sw').forEach(s=>s.classList.remove('active'));
+      b.classList.add('active');
+      save({[key]:b.dataset.c});
+    });
+    root.querySelectorAll('.sw').forEach(s=>{ if(s.dataset.c.toLowerCase()===state[key].toLowerCase()) s.classList.add('active'); });
+  }
+  wireSwatches('sw-accent','accent');
+  wireSwatches('sw-blue','blue');
+  document.getElementById('sel-hero').value=state.heroLayout;
+  document.getElementById('sel-hero').addEventListener('change',e=>save({heroLayout:e.target.value}));
+  document.getElementById('sel-sepia').value=state.sepia;
+  document.getElementById('sel-sepia').addEventListener('input',e=>save({sepia:+e.target.value}));
+
+  applyState();
+
+  // Mobile nav — show CTA on small screens
+  if(window.innerWidth <= 768){
+    document.querySelector('.nav-cta.mobile-show').style.display='flex';
+  }
+
+  // Leaflet map init
+  (function initMap(){
+    if (!window.L) return;
+    const c = document.getElementById('qld-map');
+    if (!c) return;
+    const map = L.map(c, {zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, touchZoom:false, boxZoom:false, keyboard:false, zoomSnap:0.25});
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {maxZoom:8}).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {maxZoom:13, opacity:0.6}).addTo(map);
+    const offices = [
+      {n:'Hervey Bay', c:[-25.2882,152.8644], a:'b-r'},
+      {n:'Toowoomba', c:[-27.5598,151.9507], a:'b-l'},
+      {n:'Sunshine Coast', c:[-26.6600,153.0900], a:'b-r'},
+      {n:'North Brisbane', c:[-27.3280,152.9730], a:'b-r'},
+      {n:'Ipswich', c:[-27.6162,152.7609], a:'b-l'},
+      {n:'Brisbane', c:[-27.4700,153.0050], a:'b-c'},
+      {n:'Logan', c:[-27.7100,153.1500], a:'b-r'},
+      {n:'Gold Coast', c:[-28.0000,153.4200], a:'b-r'}
+    ];
+    const makeIcon = (n,a) => {
+      let ls = 'left:50%;transform:translateX(-50%)';
+      if (a==='b-l') ls = 'right:10px;left:auto';
+      if (a==='b-r') ls = 'left:10px;right:auto';
+      return L.divIcon({className:'',iconSize:[1,1],iconAnchor:[0,0],
+        html:`<div style="position:relative;transform:translate(-50%,-100%);pointer-events:none"><div style="position:absolute;bottom:18px;${ls};background:#0B1F3A;color:#fff;font-family:'Inter Tight',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.06em;padding:3px 9px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.25);border-radius:4px">${n}</div><div style="width:14px;height:14px;background:#C9A14A;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3);position:relative;z-index:2"></div></div>`});
+    };
+    offices.forEach(o => L.marker(o.c, {icon: makeIcon(o.n,o.a), interactive:false}).addTo(map));
+    map.fitBounds(L.latLngBounds(offices.map(o=>o.c)), {padding:[50,50]});
+  })();
+</script>
+</body>
+</html>
